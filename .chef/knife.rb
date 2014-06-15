@@ -1,3 +1,4 @@
+ssl_verify_mode  :verify_peer
 cookbook_path    ["cookbooks", "site-cookbooks"]
 node_path        "nodes"
 role_path        "roles"
