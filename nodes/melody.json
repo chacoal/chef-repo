@@ -3,7 +3,7 @@
     "port": 80
   },
   "run_list": [
-     "nginx"
+     "yum-epel", "nginx", "iptables"
   ],
   "automatic": {
     "ipaddress": "melody"
