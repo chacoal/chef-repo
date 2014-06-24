@@ -1,0 +1,92 @@
+# vim: set ft=yaml ts=2 sw=2:
+---
+- itchyny/landscape.vim:
+    NeoBundle: ~
+- Shougo/neosnippet.vim:
+    NeoBundle: ~
+- Shougo/neosnippet-snippets:
+    NeoBundle: ~
+- tpope/vim-fugitive:
+    NeoBundle: ~
+- kien/ctrlp.vim:
+    NeoBundle: ~
+- flazz/vim-colorschemes:
+    NeoBundle: ~
+- Shougo/vimproc:
+    NeoBundle:
+      build:
+        unix:
+          - 'make'
+- Shougo/vimshell:
+    NeoBundle: ~
+- Shougo/vinarise.vim:
+    NeoBundle: ~
+- scrooloose/syntastic:
+    NeoBundle: ~
+- Shougo/neocomplete.vim:
+    NeoBundle: ~
+- majutsushi/tagbar:
+    NeoBundle: ~
+- itchyny/lightline.vim:
+    NeoBundle: ~
+- Shougo/vimfiler:
+    NeoBundleLazy:
+      depends:
+        - 'Shougo/unite.vim'
+      autoload:
+        commands:
+          - 'VimFilerTab'
+          - 'VimFiler'
+          - 'VimFilerExplorer'
+        mappings:
+          - '<Plug>(vimfiler_switch)'
+        explorer: 1
+- thinca/vim-quickrun:
+    NeoBundleLazy:
+      autoload:
+        mappings:
+          -
+            - 'nxo'
+            - '<Plug>(quickrun)'
+- Shougo/unite.vim:
+    NeoBundleLazy:
+      autoload:
+        commands:
+          - 'Unite'
+          - 'UniteWithBufferDir'
+- h1mesuke/unite-outline:
+    NeoBundleLazy:
+      autoload:
+        unite_sources: ["outline"]
+- davidhalter/jedi-vim:
+    NeoBundleLazy:
+      autoload:
+        filetypes:
+          - 'python'
+          - 'djangohtml'
+      build:
+        windows:
+          - 'pip install jedi'
+        mac:
+          - 'pip install jedi'
+        unix:
+          - 'pip install jedi'
+- lambdalisue/vim-pyenv:
+    NeoBundleLazy:
+      depends:
+        - 'davidhalter/jedi-vim'
+      autoload:
+        filetypes:
+          - 'python'
+- bitc/lushtags:
+    NeoBundleLazy:
+      autoload:
+        filetypes:
+          - 'haskell'
+- mattn/gist-vim:
+    NeoBundleLazy:
+      depends:
+        - 'mattn/webapi-vim'
+      autoload:
+        commands:
+          - 'Gist'

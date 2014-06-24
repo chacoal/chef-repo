@@ -6,6 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+ver = node["ruby"]["version"]
 package "openssl-devel" do
   action :install
 end
@@ -35,14 +36,13 @@ end
 ruby_block ".zshrc" do
   block do
     file = Chef::Util::FileEdit.new("/home/vagrant/.zshrc")
-    %w{
-      export\ RBENV_ROOT=/home/vagrant/.rbenv
-      export\ PATH=/home/vagrant/.rbenv/bin:$PATH
-      eval\ $(rbenv\ init\ -)
-      source\ $HOME/.rbenv/completions/rbenv.zsh
-    }.each do |string|
-      file.insert_line_if_no_match(string, string)
-    end
+    file.insert_line_if_no_match(/RBENV_ROOT/, <<EOH)
+
+export RBENV_ROOT=/home/vagrant/.rbenv
+export PATH=/home/vagrant/.rbenv/bin:$PATH
+eval $(rbenv init\ -)
+source $HOME/.rbenv/completions/rbenv.zsh
+EOH
     file.write_file
   end
 end
@@ -54,14 +54,14 @@ template "rbenv.sh" do
   source "rbenv.sh.erb"
 end
 
-bash "rbenv install 2.0.0-p353" do
+bash "rbenv install #{ver}" do
   user   "vagrant"
   group  "vagrant"
   environment "HOME" => '/home/vagrant'
   cwd    "/home/vagrant"
-  code   "source rbenv.sh; /home/vagrant/.rbenv/bin/rbenv install 2.0.0-p353"
+  code   "source rbenv.sh; /home/vagrant/.rbenv/bin/rbenv install #{ver}"
   action :run
-  not_if { ::File.exists? "/home/vagrant/.rbenv/versions/2.0.0-p353" }
+  not_if { ::File.exists? "/home/vagrant/.rbenv/versions/#{ver}" }
 end
 
 bash "rbenv rehash" do
@@ -73,12 +73,12 @@ bash "rbenv rehash" do
   action :run
 end
 
-bash "rbenv global 2.0.0-p353" do
+bash "rbenv global #{ver}" do
   user   "vagrant"
   group  "vagrant"
   environment "HOME" => '/home/vagrant'
   cwd    "/home/vagrant"
-  code   "source rbenv.sh; /home/vagrant/.rbenv/bin/rbenv global 2.0.0-p353"
+  code   "source rbenv.sh; /home/vagrant/.rbenv/bin/rbenv global #{ver}"
   action :run
 end
 

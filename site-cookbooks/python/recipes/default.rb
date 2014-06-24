@@ -7,10 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-execute "python" do
-  command 'yum -y groupinstall "Development Tools"'
-  action :run
-end
+pyver = node["python"]["version"]
 
 %W{
 zlib-devel
@@ -30,7 +27,7 @@ xz-devel
   end
 end
 
-execute "pip" do
+execute "Install pip" do
   command 'curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py -o - | sudo python'
   action :run
 end
@@ -50,14 +47,14 @@ template "pyenv.sh" do
   source "pyenv.sh.erb"
 end
 
-bash "pyenv install 2.7.6" do
+bash "pyenv install #{pyver}" do
   user   "vagrant"
   group  "vagrant"
   environment "HOME" => '/home/vagrant'
   cwd    "/home/vagrant"
-  code   "source pyenv.sh; pyenv install 2.7.6"
+  code   "source pyenv.sh; pyenv install #{pyver}"
   action :run
-  not_if { ::File.exists? "/home/vagrant/.pyenv/versions/2.7.6" }
+  not_if { ::File.exists? "/home/vagrant/.pyenv/versions/#{pyver}" }
 end
 
 bash "pyenv rehash" do
@@ -69,25 +66,16 @@ bash "pyenv rehash" do
   action :run
 end
 
-bash "virtualenv" do
-  code 'pip install virtualenv virtualenvwrapper setuptools'
-  action :run
-end
-
 ruby_block ".zshrc" do
   block do
     file = Chef::Util::FileEdit.new("/home/vagrant/.zshrc")
-    %w{
-      export\ PYENV_ROOT=$HOME/.pyenv
-      export\ PATH=$PYENV_ROOT/bin:$PATH
-      eval\ $(pyenv\ init\ -)
-      source\ $HOME/.pyenv/completions/pyenv.zsh
-      export WORKON_HOME=$HOME/.virtualenvs
-      source\ /usr/bin/virtualenvwrapper.sh
-    }.each do |string|
-      file.insert_line_if_no_match(/#{string}/, string)
-    end
+    file.insert_line_if_no_match(/PYENV_ROOT/, <<EOH)
+
+export PYENV_ROOT=$HOME/.pyenv
+export PATH=$PYENV_ROOT/bin:$PATH
+eval $(pyenv\ init -)
+source $HOME/.pyenv/completions/pyenv.zsh
+EOH
     file.write_file
   end
 end
-
